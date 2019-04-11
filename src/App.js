@@ -89,6 +89,28 @@ class App extends Component {
         this.setState({description: event.target.value});
     }
 
+    moveLeft = (laneId, cardId, name, description) => {
+        if (laneId !== "1"){
+            laneId--
+        }
+        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{id: cardId,
+            name: name,
+            description: description,
+            laneId: laneId.toString()}]);
+        this.setState({cards: newState});
+    }
+
+    moveRight = (laneId, cardId, name, description) => {
+        if (laneId !== "4"){
+            laneId++
+        }
+        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{id: cardId,
+            name: name,
+            description: description,
+            laneId: laneId.toString()}]);
+        this.setState({cards: newState});
+    }
+
     render() {
         return (
             <div style={{backgroundColor: "blue", margin: "10px", display: "flex"}}>
@@ -99,14 +121,14 @@ class App extends Component {
                 <CustomModal isOpen={this.state.isAddModalOpen}
                              handleTitleChange={this.handleTitleChange}
                              handleDescriptionChange={this.handleDescriptionChange} closeModal={this.closeAddModal}/>
-                <Lane name="Je vais postuler" id="1" cards={this.state.cards}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}/>
-                <Lane name="J'ai postulé" id="2" cards={this.state.cards}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}/>
-                <Lane name="J'ai relancé" id="3" cards={this.state.cards}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}/>
-                <Lane name="J'ai un entretien" id="4" cards={this.state.cards}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}/>
+                <Lane name="Je vais postuler" id="1" cards={this.state.cards} moveRight={this.moveRight}
+                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
+                <Lane name="J'ai postulé" id="2" cards={this.state.cards} moveRight={this.moveRight}
+                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
+                <Lane name="J'ai relancé" id="3" cards={this.state.cards} moveRight={this.moveRight}
+                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
+                <Lane name="J'ai un entretien" id="4" cards={this.state.cards} moveRight={this.moveRight}
+                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
             </div>
         );
     }
