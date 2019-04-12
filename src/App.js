@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import {Lane} from "./Components/Lane";
 import {CustomModal} from "./Components/CustomModal";
+import {DragDropContext} from "react-beautiful-dnd";
 
 
 let defaultData = [
@@ -32,14 +33,16 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {cards: defaultData,
+        this.state = {
+            cards: defaultData,
             isAddModalOpen: false,
             title: '',
-            description:'',
+            description: '',
             laneId: '',
             isEditModalOpen: false,
-            cardId: ''}
-            ;
+            cardId: '',
+        }
+        ;
 
         this.handleTitleChange = this.handleTitleChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
@@ -63,20 +66,24 @@ class App extends Component {
 
     closeEditModal = () => {
         this.setState({isEditModalOpen: false});
-        let newState = this.state.cards.filter(card => card.id !== this.state.cardId).concat([{id: id,
+        let newState = this.state.cards.filter(card => card.id !== this.state.cardId).concat([{
+            id: id,
             name: this.state.title,
             description: this.state.description,
-            laneId: this.state.laneId}]);
+            laneId: this.state.laneId
+        }]);
         this.setState({cards: newState, title: '', description: ''});
     }
 
     closeAddModal = () => {
         id++;
         this.setState({isAddModalOpen: false});
-        let newState = this.state.cards.concat([{id: id,
+        let newState = this.state.cards.concat([{
+            id: id,
             name: this.state.title,
             description: this.state.description,
-            laneId: this.state.laneId}]);
+            laneId: this.state.laneId
+        }]);
         this.setState({cards: newState, title: '', description: ''});
     }
 
@@ -90,25 +97,48 @@ class App extends Component {
     }
 
     moveLeft = (laneId, cardId, name, description) => {
-        if (laneId !== "1"){
+        if (laneId !== "1") {
             laneId--
         }
-        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{id: cardId,
+        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{
+            id: cardId,
             name: name,
             description: description,
-            laneId: laneId.toString()}]);
+            laneId: laneId.toString()
+        }]);
         this.setState({cards: newState});
     }
 
     moveRight = (laneId, cardId, name, description) => {
-        if (laneId !== "4"){
+        if (laneId !== "4") {
             laneId++
         }
-        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{id: cardId,
+        let newState = this.state.cards.filter(card => card.id !== cardId).concat([{
+            id: cardId,
             name: name,
             description: description,
-            laneId: laneId.toString()}]);
+            laneId: laneId.toString()
+        }]);
         this.setState({cards: newState});
+    }
+
+
+    onDragEnd = result => {
+        const {destination, source, draggableId} = result;
+
+        if (!destination || (source.index === destination.index && destination.droppableId === source.droppableId)) {
+            return;
+        }
+        
+        let newState = this.state.cards.filter(card => card.id !== draggableId).concat([{
+            id: draggableId,
+            name: this.state.cards.filter(card => card.id === draggableId).map(card => card.name),
+            description: this.state.cards.filter(card => card.id === draggableId).map(card => card.description),
+            laneId: destination.droppableId
+        }]);
+
+        this.setState({cards: newState});
+
     }
 
     render() {
@@ -117,18 +147,26 @@ class App extends Component {
                 <CustomModal isOpen={this.state.isEditModalOpen}
                              handleTitleChange={this.handleTitleChange}
                              handleDescriptionChange={this.handleDescriptionChange}
-                             closeModal={this.closeEditModal} title={this.state.title} description={this.state.description}/>
+                             closeModal={this.closeEditModal} title={this.state.title}
+                             description={this.state.description}/>
                 <CustomModal isOpen={this.state.isAddModalOpen}
                              handleTitleChange={this.handleTitleChange}
-                             handleDescriptionChange={this.handleDescriptionChange} closeModal={this.closeAddModal}/>
-                <Lane name="Je vais postuler" id="1" cards={this.state.cards} moveRight={this.moveRight}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
-                <Lane name="J'ai postulé" id="2" cards={this.state.cards} moveRight={this.moveRight}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
-                <Lane name="J'ai relancé" id="3" cards={this.state.cards} moveRight={this.moveRight}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
-                <Lane name="J'ai un entretien" id="4" cards={this.state.cards} moveRight={this.moveRight}
-                      addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit} moveLeft={this.moveLeft}/>
+                             handleDescriptionChange={this.handleDescriptionChange}
+                             closeModal={this.closeAddModal}/>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Lane name="Je vais postuler" id="1" cards={this.state.cards} moveRight={this.moveRight}
+                          addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}
+                          moveLeft={this.moveLeft}/>
+                    <Lane name="J'ai postulé" id="2" cards={this.state.cards} moveRight={this.moveRight}
+                          addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}
+                          moveLeft={this.moveLeft}/>
+                    <Lane name="J'ai relancé" id="3" cards={this.state.cards} moveRight={this.moveRight}
+                          addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}
+                          moveLeft={this.moveLeft}/>
+                    <Lane name="J'ai un entretien" id="4" cards={this.state.cards} moveRight={this.moveRight}
+                          addCard={this.addCard} onCardDelete={this.onCardDelete} onCardEdit={this.onCardEdit}
+                          moveLeft={this.moveLeft}/>
+                </DragDropContext>
             </div>
         );
     }

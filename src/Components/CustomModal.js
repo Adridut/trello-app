@@ -16,8 +16,6 @@ export const CustomModal = props => {
                 }}
                 contentLabel="Example Modal"
             >
-
-                <h2>Add a new card!</h2>
                 <form>
                     <div>
                         <input type="text" name="title" placeholder='Title' value={props.title} onChange={props.handleTitleChange}/>
