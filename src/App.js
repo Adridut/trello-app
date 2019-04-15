@@ -98,6 +98,7 @@ class App extends Component {
             laneId: '',
             isEditModalOpen: false,
             cardId: '',
+            index: 0
         };
 
         this.handleTitleChange = this.handleTitleChange.bind(this);
@@ -134,19 +135,19 @@ class App extends Component {
 
     };
 
-    onCardEdit = (laneId, cardId, title, description) => {
-        this.setState({isEditModalOpen: true, cardId: cardId, laneId: laneId, title: title, description: description})
+    onCardEdit = (laneId, cardId, title, description, index) => {
+        this.setState({isEditModalOpen: true, cardId: cardId, laneId: laneId, title: title, description: description, index: index})
     };
 
     closeEditModal = () => {
         this.setState({isEditModalOpen: false});
         let newState = this.state.cards;
-        newState[this.state.laneId]['cards'] = this.state.cards[this.state.laneId]['cards'].filter(card => card.id !== this.state.cardId).concat([{
+        newState[this.state.laneId]['cards'][this.state.index] = {
             id: id,
             name: this.state.title,
             description: this.state.description,
             laneId: this.state.laneId
-        }]);
+        };
         this.setState({cards: newState, title: '', description: ''});
     };
 

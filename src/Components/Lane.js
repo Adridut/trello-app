@@ -23,7 +23,7 @@ export const Lane = props => {
                                                                                id={card.id}
                                                                                index={index}
                                                                                onCardDelete={() => props.onCardDelete(props.id, card.id)}
-                                                                               onClick={() => props.onCardEdit(props.id, card.id, card.name, card.description)}/>)}
+                                                                               onClick={() => props.onCardEdit(props.id, card.id, card.name, card.description, index)}/>)}
                         {provided.placeholder}
                         <p style={{float: 'right', margin: '5px'}} onClick={() => props.addCard(props.id)}>Add a card...</p>
                     </CustomLane>
