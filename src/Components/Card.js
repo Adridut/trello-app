@@ -36,13 +36,11 @@ export const Card = props => {
                         {...provided.draggableProps}
                         {...provided.dragHandleProps}>
                         <CustomCard isDragging={snapshot.isDragging}>
+                            <FontAwesomeIcon icon="times-circle"
+                                             style={{padding: "5px", float: "right"}}
+                                             onClick={props.onCardDelete}/>
                             <div onClick={props.onClick}>
-                                <IconContainer>
-                                    <Content>{props.name}</Content>
-                                    <FontAwesomeIcon icon="times-circle"
-                                                     onClick={props.onCardDelete}
-                                                     style={{padding: "5px"}}/>
-                                </IconContainer>
+                                <Content>{props.name}</Content>
                                 <Content>{props.description}</Content>
                             </div>
                         </CustomCard>
